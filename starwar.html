@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STAR WARS</title>
+    <style>
+      body {
+        background-image: url(https://cdn.wallpapersafari.com/58/2/NSpbc5.jpg);
+      }
+      input {
+        width: 300px;
+        height: 30px;
+        margin: 1%;
+        font-family:monospace;
+        /* scroll-behavior: auto; */
+        margin-left: -3.5%;
+        border-radius: 8px;
+        
+      }
+      #movies {
+        box-sizing: border-box;
+        padding: 0px 5px;
+        width: 205px;
+        border: 1px solid black;
+        border-top: none;
+        border-radius: 15px;
+        background-color: white;
+        overflow: scroll;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+      }
+      #thrott,.logo {
+        position: relative;
+        top: 40%;
+        left: 50%;
+        margin-left: -100px;
+      }
+      .logo {
+        left: 40%;
+        margin-top: 13%;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <img class="logo" src="https://3dwarehouse.sketchup.com/warehouse/v1.0/publiccontent/b6d0cc66-d8b7-42c0-985d-48c32d3d8de6"
+        style=" width: 470px; height: 200px"
+      />
+    </div>
+    <div id="thrott">
+      <input type="text" id="query" oninput="throttlefun()" />
+      <div id="movies"></div>
+    </div>
+  </body>
+</html>
+<script>
+  let moviediv = document.getElementById("movies");
+  var timerid;
+
+  async function searchmovies() {
+    let query = document.getElementById("query").value;
+
+    let res = await fetch(`http://omdbapi.com/?s=${query}&apikey=ae323fde`);
+
+    let data = await res.json();
+    console.log("data:", data);
+    return data.Search;
+  }
+  function throttlefun() {
+    
+    if (timerid) {
+      return false;
+    }
+
+    timerid = setTimeout(() => {
+      main();
+      timerid = undefined;
+    }, 300);
+  }
+  function appendmovies(d) {
+    moviediv.innerHTML = null;
+    d.forEach(({ Title }) => {
+      let p = document.createElement("p");
+      p.innerHTML = Title;
+      moviediv.append(p);
+    });
+  }
+
+  async function main() {
+    let movies = await searchmovies();
+    appendmovies(movies);
+  }
+</script>
